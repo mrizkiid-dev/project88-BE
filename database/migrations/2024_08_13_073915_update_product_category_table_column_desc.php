@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::table('role', function (Blueprint $table) {
-        //     $table->dropColumn('role_name');
-        // });
-
-        Schema::table('role', function (Blueprint $table) {
-            $table->unique('role_name');
+        Schema::table('product_category', function (Blueprint $table) {
+            $table->text('desc')->change();
         });
     }
 
@@ -25,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('role', function (Blueprint $table) {
-            $table->unique('');
+        Schema::table('product_category', function (Blueprint $table) {
+            $table->string('desc')->change();
         });
     }
 };

@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('product_image', function (Blueprint $table) {
-            $table->string('name')->default('supabase');
+        Schema::create('role', function (Blueprint $table) {
+            $table->id();
+            $table->string('role_name')->default('user')->unique();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('product_image', function (Blueprint $table) {
-            $table->dropColumn('name');
-        });
+        Schema::dropIfExists('role');
     }
 };

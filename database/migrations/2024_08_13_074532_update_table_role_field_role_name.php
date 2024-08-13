@@ -19,6 +19,7 @@ return new class extends Migration
                 'admin',
                 'user'
             ])->default('user');
+            $table->unique('role_name');
         });
     }
 
@@ -28,7 +29,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('role', function (Blueprint $table) {
-            $table->string('role_name');
+            $table->string('role_name')->default('user')->unique();
         });
     }
 };
