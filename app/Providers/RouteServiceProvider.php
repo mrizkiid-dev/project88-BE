@@ -20,6 +20,12 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/home';
 
     /**
+     * @var string
+     *
+     */
+    protected string $ApiNamespace = 'App\Http\Controllers\Api';
+
+    /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void
@@ -29,12 +35,25 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
+            Route::prefix('api/v1')
+               ->middleware('api')
+               ->namespace($this->ApiNamespace.'\\V1')
+               ->group(base_path('routes/Api/v1.php'));
+           
+           //for v2
+            Route::prefix('api/v2')
+                   ->middleware('api')
+                   ->namespace($this->ApiNamespace.'\\V2')
+                   ->group(base_path('routes/Api/v2.php'));
+       });
 
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-        });
+        // $this->routes(function () {
+        //     Route::middleware('api')
+        //         ->prefix('api')
+        //         ->group(base_path('routes/api.php'));
+
+        //     Route::middleware('web')
+        //         ->group(base_path('routes/web.php'));
+        // });
     }
 }

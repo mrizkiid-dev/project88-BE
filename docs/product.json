@@ -1,0 +1,590 @@
+{
+    "openapi":"3.0.3",
+    "info": {
+      "title":"Products",
+      "version":"1.0"
+    },
+    "servers": [
+      {"url":"http://localhost:3000"}
+    ],
+    "paths": {
+        "/api/v1/admin/products" : {
+            "get" : {
+                "description" : "get list of product",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/search"
+                    }
+                ],
+                "responses" : {
+                    "200" : {
+                        "$ref": "#/components/responses/product_list"
+                    },
+                    "401" : {
+                        "$ref": "#/components/responses/error_unauthorize"
+                    },
+                    "404" : {
+                        "$ref": "#/components/responses/error_404_not_found"
+                    }
+                    
+                }
+            },
+            "post": {
+                "description": "Upload Product",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/product_form_data"
+                },
+                "responses": {
+                    "201" : {
+                        "$ref": "#/components/responses/product"
+                    },
+                    "401" : {
+                        "$ref": "#/components/responses/error_unauthorize"
+                    },
+                    "404" : {
+                        "$ref": "#/components/responses/error_404_not_found"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/products/{id}": {
+            "get": {
+                "description": "get product detail by id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/params_id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/product"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/error_unauthorize"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/error_404_not_found"
+                    }
+                }
+            },
+            "patch": {
+                "description": "update product",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/product_form_data"
+                },
+                "responses": {
+                    "201" : {
+                        "$ref": "#/components/responses/product"
+                    },
+                    "401" : {
+                        "$ref": "#/components/responses/error_unauthorize"
+                    },
+                    "404" : {
+                        "$ref": "#/components/responses/error_404_not_found"
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete product by id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/params_id"
+                    }
+                ],
+                "responses": {
+                    "200" : {
+                        "$ref": "#/components/responses/delete_success"
+                    },
+                    "404" : {
+                        "$ref": "#/components/responses/error_404_not_found"
+                    }
+                }
+            }
+        }
+    },
+
+    "components": {
+        "parameters": {
+            "Authorization" : {
+                "name": "Authorization",
+                "in": "header",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "params_id" : {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "number"
+                }
+            },
+            "params_idProduct" : {
+                "name": "idProduct",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "number"
+                }
+            },
+            "params_idImage" : {
+                "name": "idImage",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "number"
+                }
+            },
+            "search" : {
+                "name": "name",
+                "in": "query",
+                "required": false,
+                "description": "parameters for search product by query with field name /product?name=abc",
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "requestBodies": {
+            "product" : {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/product_request"
+                        }
+                    }
+                }
+            },
+            "product_form_data" : {
+                "content": {
+                    "multipart/form-data": {
+                        "examples": {
+                            "payload": {
+                                "value" : {
+                                    "payload": {
+                                        "sku": "string",
+                                        "name": "string",
+                                        "description": "string",
+                                        "category": {
+                                            "id": "string",
+                                            "name": "string",
+                                            "description": "string"
+                                        },
+                                        "price": 0,
+                                        "discount": 0,
+                                        "qty": 0,
+                                        "weight": 0
+                                    }
+                                }
+                            }
+                        },
+                        "schema": {
+                            "$ref": "#/components/schemas/product_request_form_data"
+                        }
+                    }
+                }
+            },
+            "product_update": {
+                "content": {
+                    "application/json" : {
+                        "schema": {
+                            "$ref": "#/components/schemas/product_request_patch"
+                        }
+                    }
+                }
+            },
+            "image_by_product_id": {
+                "description": "request body for post only one image per spesific product id",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "image_url": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "product": {
+                "description": "a list of products",
+                "content": {
+                    "application/json" : {
+                        "schema": {
+                            "$ref": "#/components/schemas/product"
+                        }
+                    }
+                }
+            },
+            "product_list": {
+                "description": "a list of products",
+                "content": {
+                    "application/json" : {
+                        "schema": {
+                            "$ref": "#/components/schemas/product_list"
+                        }
+                    }
+                }
+            },
+            "delete_success": {
+                "description": "success deleting product",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "success" : {
+                                    "type": "boolean"
+                                },
+                                "message" : {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "error_unauthorize" : {
+                "description": "errors unauthorize",
+                "content": {
+                    "application/json" : {
+                        "examples": {
+                            "errors": {
+                                "value": {
+                                    "Errors" : {
+                                        "Authentication": "unauthorize"
+                                    }
+                                }
+                            }
+                        },
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Errors": {
+                                    "type": "object",
+                                    "properties": {
+                                        "Authentication": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "error_validation_request" : {
+                "description": "validation error requestBody by laravel validation",
+                "content": {
+                    "application/json" : {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Errors": {
+                                    "type": "object",
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "password": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "error_404_not_found" : {
+                "description": "",
+                "content": {
+                    "application/json" : {
+                        "examples": {
+                            "not_found": {
+                                "value": {
+                                    "Errors" : {
+                                        "message" : "not found"
+                                    }
+                                }
+                            } 
+                        },
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Errors" : {
+                                    "type": "object",
+                                    "properties": {
+                                        "message":{
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "image": {
+                "description": "response list of image",
+                "content": {
+                    "application/json" : {
+                        "schema": {
+                            "$ref": "#/components/schemas/image_list"
+                        }
+                    }
+                }
+            },
+            "image_detail": {
+                "description": "response image detail by id",
+                "content": {
+                    "application/json" : {
+                        "schema": {
+                            "$ref" : "#/components/schemas/image"
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "errror_validation": {
+                "type": "object",
+                "properties": {
+
+                }
+            },
+            "product_list":{
+                "type": "array",
+                "items": {
+                    "$ref" : "#components/schemas/product"
+                }
+            },
+            "product" : {
+                "type": "string",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "sku": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "category" : {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "product_image" : {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id" : {
+                                    "type": "number"
+                                },
+                                "image_url": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "discount": {
+                        "type": "number"
+                    },
+                    "qty": {
+                        "type": "number"
+                    },
+                    "weight": {
+                        "type": "number"
+                    },
+                    "sell_out": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "modified_at" : {
+                        "type": "string"
+                    }
+                }
+            },
+            "product_request" : {
+                "type": "object",
+                "required": [
+                    "sku","name","description","category","product_image",
+                    "price","discount","qty","weight"
+                ],
+                "properties": {
+                    "sku": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "category" : {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "discount": {
+                        "type": "number"
+                    },
+                    "qty": {
+                        "type": "number"
+                    },
+                    "weight": {
+                        "type": "number"
+                    }
+                }
+            },
+            "product_request_form_data" : {
+                "type": "object",
+                "required": [
+                    "payload", "images[]"
+                ],
+                "properties": {
+                    "payload" : {
+                        "type": "string",
+                        "description": "FORM DATA input should be JSON-String the structure should be like this:\n\n```json\n{\n  \"sku\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"category\": {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"description\": \"string\"\n  },\n  \"price\": 0,\n  \"discount\": 0,\n  \"qty\": 0,\n  \"weight\": 0\n}\n```",
+                        "example": "{\"sku\": \"12345\", \"name\": \"Product Name\", \"description\": \"Product Description\", \"category\": {\"id\": \"1\", \"name\": \"Category Name\", \"description\": \"Category Description\"}, \"product_image\": [{\"image_url\": \"http://example.com/image.jpg\"}], \"price\": 100, \"discount\": 10, \"qty\": 5, \"weight\": 2.5}"
+                    },
+                    "images[]": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                }
+            },
+            "product_request_patch" : {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "category" : {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "product_image" : {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "image_url": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "discount": {
+                        "type": "number"
+                    },
+                    "qty": {
+                        "type": "number"
+                    },
+                    "weight": {
+                        "type": "number"
+                    }
+                }
+            },
+            "image" : {
+                "description": "image url",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "porudct_id": {
+                        "type": "string"
+                    },
+                    "image_url": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "modified_at": {
+                        "type": "string"
+                    }
+
+                }
+            },
+            "image_list": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/image"
+                
+                }
+            }
+        }
+    }
+}

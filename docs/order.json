@@ -1,0 +1,360 @@
+{
+    "openapi":"3.0.3",
+    "info": {
+      "title":"Order-api",
+      "version":"1.0"
+    },
+    "servers": [
+      {"url":"http://localhost:3000"}
+    ],
+    "tags": [
+        {
+            "name": "order",
+            "description": "Access Order Api"
+        },
+        {
+            "name": "order-id",
+            "description": "Access Order Api by id"
+        }
+    ],
+    "paths": {
+        "/api/v1/admin/orders": {
+            "get": {
+                "tags": ["order"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/authorization"
+                    },{
+                        "$ref": "#/components/parameters/searchByName"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/order_list"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/error_401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/error_403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/error_404"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/orders/{idOrder}": {
+            "get": {
+                "tags": ["order-id"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/authorization"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/order"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/error_401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/error_403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/error_404"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/orders/{idOrder}/status": {
+            "patch": {
+                "tags": ["order-id"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/idOrder"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/update_order_status"
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/success_patch"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "authorization": {
+                "name": "Authorization",
+                "in": "header",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "idOrder": {
+                "name": "idOrder",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "number"
+                }
+            },
+            "searchByName": {
+                "name": "name",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "requestBodies": {
+            "update_order_status": {
+                "description": "update order status and order status should have enum of paid,failed,expaired,done,cancel",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status_order": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "paid", 
+                                                "failed", 
+                                                "expaired", 
+                                                "done",
+                                                "cancel"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "order": {
+                "description": "success get one order by id_order",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/order"
+                        }
+                    }
+                }
+            },
+            "success_patch": {
+                "description": "success change status_order",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/order_patch_success"
+                        }
+                    }
+                }
+            },
+            "order_list": {
+                "description": "get all order with or without filter",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/order_list"
+                        }
+                    }
+                }
+            },
+            "error_401": {
+                "description": "error unauthorize",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "errors" : {
+                                    "type": "object",
+                                    "properties": {
+                                        "authentication": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "error_403": {
+                "description": "error forbidden if user who try access not admin",
+                "content": {
+                    "application/json": {
+                        "examples": {
+                            "403": {
+                                "value": {
+                                    "errors": {
+                                        "authorization": "forbidden can not access this endpoint"
+                                    }
+                                }
+                            }
+                        },
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "errors" : {
+                                    "type": "object",
+                                    "properties": {
+                                        "authorization": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "error_404": {
+                "description": "error if user value that try to find is not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "errors": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "order": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "shopping_session_id": {
+                        "type": "number"
+                    },
+                    "name_receiver": {
+                        "type": "string"
+                    },
+                    "detail_address": {
+                        "type": "string"
+                    },
+                    "province": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "sub_total": {
+                        "type": "number"
+                    },
+                    "city": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "shipping": {
+                        "type": "object",
+                        "properties": {
+                            "provider": {
+                                "type": "string"
+                            },
+                            "price": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "total_payment": {
+                        "type": "number"
+                    },
+                    "midtrans": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "token": {
+                                "type": "string"
+                            },
+                            "status": {
+                                "type": "string",
+                                "enum": [
+                                    "paid", 
+                                    "failed", 
+                                    "expaired", 
+                                    "done",
+                                    "cancel"
+                                ]
+                            }
+                        }
+                        
+                    },
+                    "status_order": {
+                        "type": "object",
+                        "properties": {
+                            "status": {
+                                "type": "string",
+                                "enum": ["paid", "send", "need_confirmation", "cancel"]
+                            }
+                        }
+                    }
+                }
+            },
+            "order_list": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/order"
+                }
+            },
+            "order_patch_success": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/order"
+                    }
+                }
+            }
+        }
+    }
+}
