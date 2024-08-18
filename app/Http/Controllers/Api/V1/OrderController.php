@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OrderController extends Controller
 {
-    public function get(Request $request) {
+    public function index(Request $request) {
         try {
             //parsing request
             $shortByDate = $request->input('sort-by-date', 'asc');
@@ -25,7 +25,7 @@ class OrderController extends Controller
             $data = Order::query()->where(function (Builder $builder) use ($request) {
                 $name = $request->input('name-receiver', '');
                 if($name) {
-                    $builder->where('name_receiver', $name);
+                    $builder->where('name_receiver','like','%'.$name.'%');
                 }
             });
 
@@ -38,28 +38,17 @@ class OrderController extends Controller
             $data = $data->paginate(perPage: $size, page: $page);
             $meta = ResponsePaginationHelper::getPaginationMetadata($data);
 
-            $datasss = Order::all();
-
             return response()->json([
                 'message' => 'get order success',
                 'meta' => $meta,
-                'data' => OrderResource::collection($datasss)
+                'data' => OrderResource::collection($data)
             ],200);
         } catch (\Throwable $e) {
             return ResponseErrorHelper::throwErrorResponse($e);
-            // if ($e instanceof HttpException) {
-            //     return response()->json([
-            //         'message' => $e->getMessage(),
-            //     ],$e->getCode());
-            // }
-
-            // return response()->json([
-            //     'message' => $e->getMessage()
-            // ],500);
         }
     }
 
-    public function getWithId($id) {
+    public function show($id) {
         try {
             $pattern = '/^[0-9]+$/';
             if($id && !preg_match($pattern,$id)){
@@ -78,7 +67,7 @@ class OrderController extends Controller
         return SortEnum::from($value);
     }
 
-    public function updateStatusOrder(OrderUpdateStatusRequest $request, $id) {
+    public function editStatusOrder(OrderUpdateStatusRequest $request, $id) {
         try {
             $request->validated();
             $pattern = '/^[0-9]+$/';

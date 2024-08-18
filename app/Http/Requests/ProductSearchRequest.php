@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\SortEnum;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rules\Enum;
 
 class ProductSearchRequest extends FormRequest
@@ -37,7 +38,7 @@ class ProductSearchRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'sort-by-sellout.Illuminate\Validation\Rules\Enum' => 'Status should be "pending, paid, send, need_confirmation, cancel" and case-sensitive.'
+            'sort-by-sellout.Illuminate\Validation\Rules\Enum' => 'Status should be "desc or asc" and case-sensitive.'
         ];
     }
 

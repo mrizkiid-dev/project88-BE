@@ -30,7 +30,7 @@ class AuthController extends Controller
             $isSuccess = Auth::attempt($credentials);
             
             if (!$isSuccess) {
-                throw new HttpException(401, 'Unauthorized');
+                throw new HttpException(401, 'User email and password not valid');
             }
 
             $user = Auth::user();
@@ -48,6 +48,11 @@ class AuthController extends Controller
         try {
             DB::beginTransaction();
             $request->validated();
+
+            $isUserExist = User::where('email', $request->email)->exists();
+            if($isUserExist) {
+                throw new HttpException(409, 'email already registered');
+            }
 
             $user = User::create([
                 'name' => $request->name,

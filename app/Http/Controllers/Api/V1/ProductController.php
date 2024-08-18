@@ -39,7 +39,7 @@ class ProductController extends Controller
             $data = Product::query();
             $data->with(['productCategory', 'productImage']);
             $data->where(function(Builder $builder) use ($request) {
-                $sku = $request->query('name', '');
+                $sku = $request->query('sku', '');
                 if($sku) {
                     $builder->where('SKU', 'like','%'.$sku.'%');
                 } 
@@ -53,11 +53,6 @@ class ProductController extends Controller
             $sortBySellOut = $request->input('sort-by-sellout', 'asc');
             if($sortBySellOut === 'desc') {
                 $data->orderBy('sell_out', 'desc');
-            }
-
-            $shortByDate = $request->input('sort-by-date', 'asc');
-            if($shortByDate === 'desc') {
-                $data->orderBy('created_at', 'desc');
             }
 
             $page = $request->input('page', 1);
@@ -74,7 +69,7 @@ class ProductController extends Controller
         }
     }
 
-    public function storeProduct(ProductUploadRequest $request)
+    public function store(ProductUploadRequest $request)
     {
         try {
             $request->validated();
@@ -124,7 +119,7 @@ class ProductController extends Controller
         }
     }
 
-    public function getWithId($id) {
+    public function show($id) {
         try {
             CheckerHelper::isDigit($id);
             $data = Product::find($id);
@@ -137,7 +132,7 @@ class ProductController extends Controller
         }
     }
 
-    public function patchWithId(ProductUpdateRequest $request, $id) {
+    public function edit(ProductUpdateRequest $request, $id) {
         try {
             DB::beginTransaction();
 
@@ -221,7 +216,7 @@ class ProductController extends Controller
         }
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
         try {
             $data = Product::find($id);

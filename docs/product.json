@@ -26,6 +26,9 @@
                     "401" : {
                         "$ref": "#/components/responses/error_unauthorize"
                     },
+                    "403" : {
+                        "$ref": "#/components/responses/error_403"
+                    },
                     "404" : {
                         "$ref": "#/components/responses/error_404_not_found"
                     }
@@ -48,6 +51,9 @@
                     },
                     "401" : {
                         "$ref": "#/components/responses/error_unauthorize"
+                    },
+                    "403" : {
+                        "$ref": "#/components/responses/error_403"
                     },
                     "404" : {
                         "$ref": "#/components/responses/error_404_not_found"
@@ -73,6 +79,9 @@
                     "401": {
                         "$ref": "#/components/responses/error_unauthorize"
                     },
+                    "403" : {
+                        "$ref": "#/components/responses/error_403"
+                    },
                     "404": {
                         "$ref": "#/components/responses/error_404_not_found"
                     }
@@ -95,6 +104,9 @@
                     "401" : {
                         "$ref": "#/components/responses/error_unauthorize"
                     },
+                    "403" : {
+                        "$ref": "#/components/responses/error_403"
+                    },
                     "404" : {
                         "$ref": "#/components/responses/error_404_not_found"
                     }
@@ -113,6 +125,12 @@
                 "responses": {
                     "200" : {
                         "$ref": "#/components/responses/delete_success"
+                    },
+                    "401" : {
+                        "$ref": "#/components/responses/error_unauthorize"
+                    },
+                    "403" : {
+                        "$ref": "#/components/responses/error_403"
                     },
                     "404" : {
                         "$ref": "#/components/responses/error_404_not_found"
@@ -270,14 +288,43 @@
                 }
             },
             "error_unauthorize" : {
-                "description": "errors unauthorize",
+                "description": "errors UnAuthenticate",
                 "content": {
                     "application/json" : {
                         "examples": {
                             "errors": {
                                 "value": {
-                                    "Errors" : {
-                                        "Authentication": "unauthorize"
+                                    "errors" : {
+                                        "message": "UnAuthenticate"
+                                    }
+                                }
+                            }
+                        },
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Errors": {
+                                    "type": "object",
+                                    "properties": {
+                                        "Authentication": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "error_403" : {
+                "description": "errors 403 forbidden",
+                "content": {
+                    "application/json" : {
+                        "examples": {
+                            "errors": {
+                                "value": {
+                                    "errors" : {
+                                        "message": "Forbidden, you do not have access"
                                     }
                                 }
                             }
@@ -305,7 +352,7 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "Errors": {
+                                "errors": {
                                     "type": "object",
                                     "properties": {
                                         "email": {
@@ -337,7 +384,7 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "Errors" : {
+                                "errors" : {
                                     "type": "object",
                                     "properties": {
                                         "message":{
@@ -385,7 +432,7 @@
                 }
             },
             "product" : {
-                "type": "string",
+                "type": "object",
                 "properties": {
                     "id": {
                         "type": "number"

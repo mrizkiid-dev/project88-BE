@@ -45,9 +45,9 @@ Route::prefix('admin')->middleware(['auth:sanctum', AuthAdminMiddleware::class])
     });
 
     Route::controller(OrderController::class)->group(function () {
-        Route::get('/orders', 'get');
-        Route::get('/orders/{id}', 'getWithId');
-        Route::patch('/orders/{id}/status', 'updateStatusOrder');
+        Route::get('/orders', 'index');
+        Route::get('/orders/{id}', 'show');
+        Route::patch('/orders/{id}/status', 'editStatusOrder');
     });
 
     Route::controller(ProductController::class)->group(function () {
@@ -55,10 +55,10 @@ Route::prefix('admin')->middleware(['auth:sanctum', AuthAdminMiddleware::class])
         Route::get('/products/test', 'test');
 
         Route::get('/products', 'index');
-        Route::post('/products', 'storeProduct');
+        Route::post('/products', 'store');
 
-        Route::get('/products/{id}', 'getWithId');
-        Route::patch('/products/{id}', 'patchWithId');
-        Route::delete('/products/{id}', 'delete');
+        Route::get('/products/{id}', 'show');
+        Route::patch('/products/{id}', 'edit');
+        Route::delete('/products/{id}', 'destroy');
     });
 });
