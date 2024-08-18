@@ -29,19 +29,19 @@ class DatabaseSeeder extends Seeder
     }
 
     private function resetDatabase(){
-        // DB::delete('delete from public.user_role');
-        // DB::delete('delete from public.role');
-        // DB::delete('delete from public.users');
+        DB::delete('delete from public.user_role');
+        DB::delete('delete from public.role');
+        DB::delete('delete from public.users');
         
-        // DB::delete('delete from public.order');
-        // DB::delete('delete from public.order_confirmation');
-        // DB::delete('delete from public.order_item');
-        // DB::delete('delete from public.product_image');
-        // DB::delete('delete from public.product');
-        // DB::delete('delete from public.product_category');
-        // DB::delete('delete from public.shopping_session');
-        // DB::delete('delete from public.user');
-        // DB::delete('delete from public.user_address');
-        // DB::delete('delete from public.users');
+        DB::delete('delete from public.order');
+        DB::delete('delete from public.order_confirmation');
+        DB::delete('delete from public.order_item');
+        DB::delete('delete from public.product_image');
+        DB::delete('delete from public.product');
+        DB::delete('delete from public.product_category');
+        DB::delete('delete from public.shopping_session');
+        DB::delete('delete from public.user');
+        DB::delete('delete from public.user_address');
+        DB::delete('delete from public.users');
     }
 }
