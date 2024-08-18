@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Utils;
 class CheckerHelper {
     public static function isDigit($id): void{
         $pattern = '/^[0-9]+$/';

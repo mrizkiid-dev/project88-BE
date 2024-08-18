@@ -3,7 +3,11 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,13 +16,32 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $this->resetDatabase();
+        $this->call(RoleSeeder::class);
+        $this->call(UserSeeder::class);
+        $this->call(ShoppingSessionSeeder::class);
+        $this->call(ProductCategorySeeder::class);
+        $this->call(ProductSeeder::class);
+        $this->call(ProductImageSeeder::class);
+        $this->call(UserAddressSeeder::class);
+        $this->call(OrderSeeder::class);
+        $this->call(OrderItemSeeder::class);
+    }
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-        // $this->call(OrderConfirmationSeeder::class);
-        // $this->call(RoleSeeder::class);
+    private function resetDatabase(){
+        // DB::delete('delete from public.user_role');
+        // DB::delete('delete from public.role');
+        // DB::delete('delete from public.users');
+        
+        // DB::delete('delete from public.order');
+        // DB::delete('delete from public.order_confirmation');
+        // DB::delete('delete from public.order_item');
+        // DB::delete('delete from public.product_image');
+        // DB::delete('delete from public.product');
+        // DB::delete('delete from public.product_category');
+        // DB::delete('delete from public.shopping_session');
+        // DB::delete('delete from public.user');
+        // DB::delete('delete from public.user_address');
+        // DB::delete('delete from public.users');
     }
 }

@@ -2,32 +2,28 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
+use App\Models\ProductCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class RoleSeeder extends Seeder
+class ProductCategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-
         try {
             DB::beginTransaction();
-            Role::create([
-                'role_name' => 'admin',
-            ]);
-
-            Role::create([
-                'role_name' => 'user',
+            ProductCategory::create([
+                'name' => 'category-1',
+                'desc' => 'desc-category-1'
             ]);
             DB::commit();
         } catch (\Throwable $e) {
-            Log::debug('RoleSeeder error = '.$e->getMessage());
+            Log::debug('ProductCategorySeeder error = ',$e->getMessage());
             DB::rollBack();
         }
     }

@@ -10,14 +10,15 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
+use App\Utils\CheckerHelper;
 use App\Utils\ResponseErrorHelper;
 use App\Utils\ResponsePaginationHelper;
-use CheckerHelper;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -30,7 +31,7 @@ class ProductController extends Controller
         return response()->json($data);
     }
 
-    public function index(ProductUploadRequest $request)
+    public function index(ProductSearchRequest $request)
     {
         try {
             $request->validated();
@@ -67,7 +68,7 @@ class ProductController extends Controller
             return response()->json([
                 'meta' => $meta,
                 'data' => ProductResource::collection($data)   
-            ],201);
+            ],200);
         } catch (\Throwable $e) {
             return ResponseErrorHelper::throwErrorResponse($e);
         }
@@ -104,7 +105,7 @@ class ProductController extends Controller
                     array_push($productImagePayload,new ProductImage([
                         'image_url' => $url,
                         'name' => $imageName,
-                        'path' => 'storage/products/'.$imageName,
+                        'path' => 'products/'.$imageName,
                         'created_at' => now(),
                         'modified_at' => now()
                     ]));
@@ -138,74 +139,83 @@ class ProductController extends Controller
 
     public function patchWithId(ProductUpdateRequest $request, $id) {
         try {
-            $request->validated();
-            $payload = json_decode($request->payload, true);
-            $this->checkCategoryExist($payload['category']['id']);
-
             DB::beginTransaction();
 
+            $request->validated();
+            $payload = json_decode($request->payload, true);
+            if(isset($payload['category']['id'])) {
+                $this->checkCategoryExist($payload['category']['id']);
+            }
+
             $data = Product::find($id);
-            if($payload['sku']) {
+            if(isset($payload['sku'])) {
                 $data->SKU = $payload['sku'];
             }
-            if($payload['name']) {
+            if(isset($payload['name'])) {
                 $data->name = $payload['name'];
             }
-            if($payload['category']['id']) {
+            if(isset($payload['category']['id'])) {
                 $data->category_id = $payload['category']['id'];
             }
-            if($payload['description']) {
+            if(isset($payload['description'])) {
                 $data->desc = $payload['description'];
             }
-            if($payload['price']) {
+            if(isset($payload['price'])) {
                 $data->price = $payload['price'];
             }
-            if($payload['discount']) {
+            if(isset($payload['discount'])) {
                 $data->discount = $payload['discount'];
             }
-            if($payload['qty']) {
+            if(isset($payload['qty'])) {
                 $data->qty = $payload['qty'];
             }
-            // if($payload['sell_out']) {
-            //     $data->sell_out = $payload['sell_out'];
-            // }
-            if($payload['weight']) {
+            if(isset($payload['sell_out'])) {
+                $data->sell_out = $payload['sell_out'];
+            }
+            if(isset($payload['weight'])) {
                 $data->weight = $payload['weight'];
             }
 
             $data->save();
-            
-            if($payload['deleteIds']){
+            if(isset($payload['deleteIds'])){
                 $deleteIds = $payload['deleteIds'];
                 $dataDelete = ProductImage::whereIn('id', $deleteIds)->get(['name']);
+
+                $imagesDelete = [];
+                foreach ($dataDelete as $imageDelete) {
+                   array_push($imagesDelete, 'products/'.$imageDelete->name);
+                }
+
                 $data->productImage()->whereIn('id', $deleteIds)->delete();
-                Storage::disk('public')->delete($dataDelete);
+                Storage::disk('public')->delete($imagesDelete);
             }
 
             if($request->hasFile('images')) {
                 $productImagePayload = [];
                 foreach ($request->images as $image) {
                     $imageName = time().'_'.$image->getClientOriginalName();
-                    $storage = Storage::disk('public');
                     Storage::disk('public')->put('products/'.$imageName, file_get_contents($image));
                     $url = Storage::disk('public')->url('products/'.$imageName);
 
                     array_push($productImagePayload,new ProductImage([
                         'image_url' => $url,
                         'name' => $imageName,
-                        'path' => 'storage/products/'.$imageName,
+                        'path' => 'products/'.$imageName,
                         'created_at' => now(),
                         'modified_at' => now()
                     ]));
                 }
+                Log::debug('kok supabase sih = '.json_encode($productImagePayload));
                 $data->productImage()->saveMany($productImagePayload);
             }
-
             DB::commit();
+            $product = Product::find($id);
             return response()->json([
-                'message' => 'patch with id '.$id
+                'message' => 'patch with id '.$id,
+                'data' => new ProductResource($product)
             ]);
         } catch (\Throwable $e) {
+            Log::debug('error product patch = '.$e->getMessage().'xxxx'.$e->getTrace());
             DB::rollBack();
             return ResponseErrorHelper::throwErrorResponse($e);
         }
@@ -226,7 +236,7 @@ class ProductController extends Controller
             DB::commit();
         
             return response()->json([
-                'status' => true,
+                'success' => true,
                 'message' => 'delete with '.$id
             ]); 
         } catch (\Throwable $e) {

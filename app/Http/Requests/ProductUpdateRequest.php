@@ -24,18 +24,9 @@ class ProductUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "payload" => ['required'],
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            // "sku" => ['string'],
-            // "name" => ['string'],
-            // "description" => ['string'],
-            // "category.id" => ['integer'],
-            // "product_image" => ['array', 'max:5'],
-            // "product_image.*.image_url" => ['string'],
-            // "price" => ['integer'],
-            // "discount" => ['integer'],
-            // "qty" => ['integer'],
-            // "weight" => ['integer']
+            'payload' => ['string'],
+            'images' => ['array'],
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ];
     }
 
@@ -43,7 +34,7 @@ class ProductUpdateRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'errors' => $validator->getMessageBag()
-        ]));
+        ],400));
     }
 
 }

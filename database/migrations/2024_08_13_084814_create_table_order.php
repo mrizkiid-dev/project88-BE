@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shopping_session_id')->constrained('shopping_sessions')->onDelete('cascade');
+            $table->foreignId('shopping_session_id')->constrained('shopping_session')->onDelete('cascade');
             $table->string('name_receiver')->nullable();
             $table->string('detail_address')->nullable();
             $table->string('city')->nullable();
@@ -22,13 +22,15 @@ return new class extends Migration
             $table->bigInteger('total_payment')->default(0);
             $table->bigInteger('shipping_price')->nullable();
             $table->bigInteger('sub_total')->nullable();
-            $table->string('status', 255)->default('pending');
+            $table->enum('status', [
+                'pending',
+                'paid',
+                'send',
+                'need_confirmation',
+                'cancel'
+            ])->default('pending');
             $table->timestampTz('created_at')->default(DB::raw('now()'));
             $table->timestampTz('modified_at')->default(DB::raw('now()'));
-            
-            // Add constraints
-            $table->primary('id');
-            $table->check('status in (\'pending\', \'paid\', \'send\', \'need_confirmation\', \'done\', \'cancel\')');
         });
     }
 

@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ShoppingSession extends Model
 {
     use HasFactory;
-    protected $table = "shopping_session";
-    protected $primaryKey = "id";
-    protected $keyType = "int";
+    protected $table = 'shopping_session';
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
     public $timestamps = true;
 
     const CREATED_AT = 'created_at';

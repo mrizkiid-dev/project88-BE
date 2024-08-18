@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class OrderItem extends Model
 {
     use HasFactory;
-    protected $table = "order_item";
-    protected $primaryKey = "id";
-    protected $keyType = "int";
+    protected $table = 'order_item';
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
     public $incrementing = true;
     public $timestamps = true;
 

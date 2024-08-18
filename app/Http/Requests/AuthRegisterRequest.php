@@ -38,6 +38,6 @@ class AuthRegisterRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'errors' => $validator->getMessageBag()
-        ]));
+        ],400));
     }
 }

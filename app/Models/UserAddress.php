@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class UserAddress extends Model
 {
     use HasFactory;
-    protected $table = "user_address";
-    protected $primaryKey = "id";
-    protected $keyType = "int";
+    protected $table = 'user_address';
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
     public $timestamps = true;
 
     const CREATED_AT = 'created_at';

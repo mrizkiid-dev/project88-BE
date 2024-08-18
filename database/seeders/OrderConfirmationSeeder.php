@@ -15,12 +15,6 @@ class OrderConfirmationSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-    //     $orders = DB::table('order')->get();
-    //     foreach ($orders as $order) {
-    //         # code...
-    //         DB::table('order_confirmation')->insert()
-    //     }
         $orders = Order::all();
         foreach ($orders as $order) {
             OrderConfirmation::create([

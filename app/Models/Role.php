@@ -9,11 +9,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Role extends Model
 {
     use HasFactory;
-    protected $table = "role";
-    protected $primaryKey = "id";
-    protected $keyType = "int";
+    protected $table = 'role';
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
     public $timestamps = true;
     public $incrementing = true;
+
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'modified_at';
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'modified_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'role_name'
@@ -23,7 +31,7 @@ class Role extends Model
     {
         return $this->belongsToMany(
             Role::class,
-            table: 'role',
+            table: 'user_role',
             foreignPivotKey: 'role_id',
             relatedPivotKey: 'users_id'
         );

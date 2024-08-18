@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Order extends Model
 {
     use HasFactory;
-    protected $table = "order";
-    protected $primaryKey = "id";
-    protected $keyType = "int";
+    protected $table = 'order';
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
     public $incrementing = true;
     public $timestamps = true;
 

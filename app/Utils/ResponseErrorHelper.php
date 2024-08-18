@@ -19,7 +19,6 @@ class ResponseErrorHelper {
         return response()->json([
             'errors' => [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTrace()
             ]
         ],500);
     }

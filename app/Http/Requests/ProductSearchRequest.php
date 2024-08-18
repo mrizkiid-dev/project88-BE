@@ -24,11 +24,6 @@ class ProductSearchRequest extends FormRequest
      */
     public function rules(): array
     {
-        // search by sku
-        // search by name
-
-        // filter by created_at
-        // filter by sell_out
         return [
             'sku' => ['string'],
             'name' => ['string'],

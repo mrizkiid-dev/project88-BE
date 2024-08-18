@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class OrderConfirmation extends Model
 {
     use HasFactory;
-    protected $table = "order_confirmation";
-    protected $primaryKey = "id";
-    protected $keyType = "int";
+    protected $table = 'order_confirmation';
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
     public $incrementing = true;
     public $timestamps = true;
 

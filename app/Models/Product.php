@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Product extends Model
 {
     use HasFactory;
-    protected $table = "product";
-    protected $primaryKey = "id";
-    protected $keyType = "int";
+    protected $table = 'product';
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
     public $timestamps = true;
 
     const CREATED_AT = 'created_at';
@@ -21,6 +21,7 @@ class Product extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'modified_at' => 'datetime',
+        'discount' => 'float'
     ];
     public $incrementing = true;
 

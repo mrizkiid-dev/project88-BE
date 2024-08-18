@@ -31,9 +31,8 @@ class AuthAdminController extends Controller
             $user->role()->attach($roles->id);
 
             DB::commit();
-            // $token = Auth::login($user);
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'User created successfully',
                 'user' => new UserResource($user)
             ],201);

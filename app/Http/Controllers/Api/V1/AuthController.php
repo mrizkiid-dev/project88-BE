@@ -5,16 +5,18 @@ namespace App\Http\Controllers\Api\V1;
 use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthLoginRequest;
+use App\Http\Requests\AuthLoginTokenRequest;
 use App\Http\Requests\AuthRegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use App\Utils\ResponseErrorHelper;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthController extends Controller
@@ -31,17 +33,10 @@ class AuthController extends Controller
                 throw new HttpException(401, 'Unauthorized');
             }
 
-            // if(Auth::User()->role->pluck('role_name')->)
-            $token = Auth::user()->createToken('token')->plainTextToken;
-
             $user = Auth::user();
             return response()->json([
-                    'status' => 'success',
+                    'success' => true,
                     'user' => new UserResource($user),
-                    'authorisation' => [
-                        'token' => $token,
-                        'type' => 'bearer',
-                    ]
                 ]);
         } catch (\Throwable $e) {
             return ResponseErrorHelper::throwErrorResponse($e);
@@ -61,13 +56,12 @@ class AuthController extends Controller
             ]);
 
             $roles = Role::where('role_name', RoleEnum::USER)->first();
-            Log::info(['roles = ',$roles]);
             $user->role()->attach($roles->id);
 
             DB::commit();
             // $token = Auth::login($user);
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'User created successfully',
                 'user' => $user
             ],201);
@@ -79,22 +73,73 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Auth::logout();
-        return response()->json([
-            'success' => 'true',
-            'message' => 'Successfully logged out',
-        ]);
+        try {
+            $user = Auth::user();
+            $user->currentAccessToken()->delete();
+            auth()->guard('web')->logout();
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully logged out',
+            ]);
+        } catch (\Throwable $e) {
+            return ResponseErrorHelper::throwErrorResponse($e);
+        }
     }
 
-    public function refresh()
+    public function refresh(Request $request)
     {
-        return response()->json([
-            'status' => 'success',
-            'user' => Auth::user(),
-            'authorisation' => [
-                'token' => Auth::refresh(),
-                'type' => 'bearer',
-            ]
-        ]);
+        try {
+            $validated = $request->validate([
+                'device_name' => ['required', 'string']
+            ]);
+            $user = Auth::user();
+            if(!$user) {
+                throw new HttpException(401, 'unauthorize');
+            }
+            
+            $user->currentAccessToken()->delete();
+            $token = $token = $user->createToken($validated['device_name'])->plainTextToken;
+            if (!$token) {
+                throw new HttpException(401, 'unauthorize');
+            }
+            
+            return response()->json([
+                'success' => true,
+                'user' => new UserResource($user),
+                'authorization' => [
+                    'token' => $token,
+                    'type' => 'Bearer',
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return ResponseErrorHelper::throwErrorResponse($e);
+        }
+    }
+
+    public function loginToken(AuthLoginTokenRequest $request)
+    {
+        try {
+            $request->validated();
+
+            $user = User::where('email', $request->email)->first();
+            if (! $user || ! Hash::check($request->password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'email' => ['The provided credentials are incorrect.'],
+                ]);
+            }
+
+            $token = $user->createToken($request->device_name)->plainTextToken;
+
+            return response()->json([
+                    'success' => true,
+                    'user' => new UserResource($user),
+                    'authorization' => [
+                        'token' => $token,
+                        'type' => 'Bearer',
+                    ]
+                ]);
+        } catch (\Throwable $e) {
+            return ResponseErrorHelper::throwErrorResponse($e);
+        }  
     }
 }

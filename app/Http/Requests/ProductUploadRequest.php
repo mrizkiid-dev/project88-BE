@@ -24,18 +24,9 @@ class ProductUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "payload" => ['required'],
+            'payload' => ['required'],
+            'images' => ['required', 'array'],
             'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            // "payload.sku" => ['required', 'string'],
-            // "payload.name" => ['required', 'string'],
-            // "payload.description" => ['required', 'string'],
-            // "payload.category.id" => ['required', 'integer'],
-            // "payload.product_image" => ['required', 'array', 'max:5'],
-            // "payload.product_image.*.image_url" => ['required', 'string'],
-            // "payload.price" => ['required', 'integer'],
-            // "payload.discount" => ['required', 'integer'],
-            // "payload.qty" => ['required', 'integer'],
-            // "payload.weight" => ['required', 'integer']
             
         ];
     }
@@ -44,7 +35,7 @@ class ProductUploadRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'errors' => $validator->getMessageBag()
-        ]));
+        ],400));
     }
 
 }

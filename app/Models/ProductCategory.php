@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ProductCategory extends Model
 {
     use HasFactory;
-    protected $table = "product_category";
-    protected $primaryKey = "id";
-    protected $keyType = "int";
+    protected $table = 'product_category';
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
     public $timestamps = true;
     public $incrementing = true;
 

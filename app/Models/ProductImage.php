@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ProductImage extends Model
 {
     use HasFactory;
-    protected $table = "product_image";
-    protected $primaryKey = "id";
-    protected $keyType = "int";
+    protected $table = 'product_image';
+    protected $primaryKey = 'id';
+    protected $keyType = 'int';
     public $timestamps = true;
     public $incrementing = true;
 
@@ -26,7 +26,10 @@ class ProductImage extends Model
     protected $fillable = [
         'product_id',
         'image_url',
-        'name'
+        'name',
+        'path',
+        'created_at',
+        'modified_at'
     ];
 
     public function product(): BelongsTo {

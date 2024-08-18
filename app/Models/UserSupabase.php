@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class UserSupabase extends Model
 {
     use HasFactory;
-    protected $table = "user";
-    protected $primaryKey = "uuid";
-    protected $keyType = "string";
+    protected $table = 'user';
+    protected $primaryKey = 'uuid';
+    protected $keyType = 'string';
     public $timestamps = true;
 
     const CREATED_AT = 'created_at';

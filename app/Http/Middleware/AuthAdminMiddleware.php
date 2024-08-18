@@ -17,13 +17,14 @@ class AuthAdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
-        Log::info(['user role = ', $request->user()->role->pluck('role_name')]);
         if($request->user()->role->pluck('role_name')->contains(RoleEnum::ADMIN->value)) {
             return $next($request);
         }
 
         $ErrorResponse = [
-            'message' =>'Invalid Token',
+            'errors' => [
+                'message' =>'Forbidden, you do not have access',
+            ]
         ];
         abort(response()->json($ErrorResponse, 403));
     }

@@ -29,11 +29,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 //TODO test will delete soon
-Route::get('/test', [TestController::class, 'get']);
+Route::get('/test', [TestController::class, 'get'])->middleware('auth:sanctum');
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('/register', 'register');
+    Route::post('/logout', 'logout')->middleware('auth:sanctum');
+    Route::post('/mobile/login', 'loginToken');
+    Route::post('/mobile/refresh-token', 'refresh')->middleware(['auth:sanctum']);
 });
 
 Route::prefix('admin')->middleware(['auth:sanctum', AuthAdminMiddleware::class])->group(function() {
@@ -49,13 +52,13 @@ Route::prefix('admin')->middleware(['auth:sanctum', AuthAdminMiddleware::class])
 
     Route::controller(ProductController::class)->group(function () {
         //TODO test will delete soon
-        Route::get('/product/test', 'test');
+        Route::get('/products/test', 'test');
 
-        Route::get('/product', 'index');
-        Route::post('/product', 'storeProduct');
+        Route::get('/products', 'index');
+        Route::post('/products', 'storeProduct');
 
-        Route::get('/product/{id}', 'getWithId');
-        Route::patch('/product/{id}', 'patchWithId');
-        Route::delete('/product/{id}', 'delete');
+        Route::get('/products/{id}', 'getWithId');
+        Route::patch('/products/{id}', 'patchWithId');
+        Route::delete('/products/{id}', 'delete');
     });
 });

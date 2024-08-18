@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderUpdateStatusRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Utils\ResponseErrorHelper;
 use App\Utils\ResponsePaginationHelper;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -37,21 +38,24 @@ class OrderController extends Controller
             $data = $data->paginate(perPage: $size, page: $page);
             $meta = ResponsePaginationHelper::getPaginationMetadata($data);
 
+            $datasss = Order::all();
+
             return response()->json([
                 'message' => 'get order success',
                 'meta' => $meta,
-                'data' => OrderResource::collection($data)
+                'data' => OrderResource::collection($datasss)
             ],200);
         } catch (\Throwable $e) {
-            if ($e instanceof HttpException) {
-                return response()->json([
-                    'message' => $e->getMessage(),
-                ],$e->getCode());
-            }
+            return ResponseErrorHelper::throwErrorResponse($e);
+            // if ($e instanceof HttpException) {
+            //     return response()->json([
+            //         'message' => $e->getMessage(),
+            //     ],$e->getCode());
+            // }
 
-            return response()->json([
-                'message' => $e->getMessage()
-            ],500);
+            // return response()->json([
+            //     'message' => $e->getMessage()
+            // ],500);
         }
     }
 
@@ -66,15 +70,7 @@ class OrderController extends Controller
             return new OrderResource($data);
 
         } catch (\Throwable $e) {
-            if ($e instanceof HttpException) {
-                return response()->json([
-                    'message' => $e->getMessage(),
-                ],$e->getStatusCode());
-            }
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ],500);
+            return ResponseErrorHelper::throwErrorResponse($e);
         }
     }
 
@@ -103,15 +99,7 @@ class OrderController extends Controller
 
             
         } catch (\Throwable $e) {
-            if ($e instanceof HttpException) {
-                return response()->json([
-                    'message' => $e->getMessage(),
-                ],$e->getStatusCode());
-            }
-
-            return response()->json([
-                'message' => $e->getMessage()
-            ],500);
+            return ResponseErrorHelper::throwErrorResponse($e);
         }
     }
 }
