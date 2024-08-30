@@ -2,8 +2,9 @@
 
 1. This back-end is my personal project to make e-commerce named **project88** crated with **laravel 10**
 2. I made the fronted with **NUXT-JS** and **Supabase** as a back-end before check on [project88.rizkidev.my.id][1]
-3. This repo is only about to make for admin,
-4. My original back-end is from supabase so i need to migrate database **postgresSQL** to my local for developement purpose
+3. [1]: https://project88.rizkidev.my.id
+4. This repo is only about to make for admin,
+5. My original back-end is from supabase so i need to migrate database **postgresSQL** to my local for developement purpose
 ****
 
 # Requirement
