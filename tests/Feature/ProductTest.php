@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\RoleSeeder;
+use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
